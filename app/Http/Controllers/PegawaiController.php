@@ -13,15 +13,13 @@ class PegawaiController extends Controller
     public function index()
     {
         $pegawais = Pegawai::all();
-        return response()->view('/pegawai/pegawai_index', ['pegawais' => $pegawais])
-            ->header('Content-Type', 'text/html');
+        return response()->view('pegawai.pegawai_index', ['pegawais' => $pegawais]);
     }
 
     // Menampilkan form tambah pegawai
     public function create()
     {
-        return response()->view('/pegawai/pegawai_create')
-            ->header('Content-Type', 'text/html');
+        return response()->view('/pegawai/pegawai_create');
     }
 
     // Menyimpan pegawai baru
@@ -50,16 +48,14 @@ class PegawaiController extends Controller
     public function show($id)
     {
         $pegawai = Pegawai::findOrFail($id);
-        return response()->view('/pegawai/pegawai_show', ['pegawai' => $pegawai])
-            ->header('Content-Type', 'text/html');
+        return response()->view('/pegawai/pegawai_show', ['pegawai' => $pegawai]);
     }
 
     // Menampilkan form edit
     public function edit($id)
     {
         $pegawai = Pegawai::findOrFail($id);
-        return response()->view('/pegawai/pegawai_edit', ['pegawai' => $pegawai])
-            ->header('Content-Type', 'text/html');
+        return response()->view('/pegawai/pegawai_edit', ['pegawai' => $pegawai]);
     }
 
     // Update data pegawai
