@@ -16,11 +16,13 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->role === 'admin'){
-            return next($request);
+        // Cek apakah user sudah login dan memiliki role admin
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            // Jika bukan admin, redirect dengan pesan error
+            return redirect('/')->with('error', 'Anda tidak memiliki akses ke halaman ini');
         }
 
-        return redirect('/dashboard');
+        return $next($request);
     }
     
 
