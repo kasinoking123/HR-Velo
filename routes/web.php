@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PegawaiController;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,7 +27,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('pegawai', PegawaiController::class);
 });
 
-
+Route::get('/test-db', function() {
+    try {
+        DB::connection()->getPdo();
+        return "Connected successfully to: " . DB::connection()->getDatabaseName();
+    } catch (\Exception $e) {
+        return "Could not connect to database. Error: " . $e->getMessage();
+    }
+});
 
 
 require __DIR__.'/auth.php';

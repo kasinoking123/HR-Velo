@@ -7,6 +7,15 @@
 </head>
 <body>
     <div class="container mt-4">
+        <div class="container mt-4">
+        <?php if(session('success')): ?>
+            <div class="alert alert-success"><?php echo session('success'); ?></div>
+        <?php endif; ?>
+        
+        <?php if(session('error')): ?>
+            <div class="alert alert-danger"><?php echo session('error'); ?></div>
+        <?php endif; ?>
+
         <h2>Edit Data Pegawai</h2>
         <form action="/pegawai/<?php echo $pegawai->id; ?>" method="POST">
             <input type="hidden" name="_method" value="PUT">
@@ -16,6 +25,11 @@
                 <label for="nip" class="form-label">NIP</label>
                 <input type="text" class="form-control" id="nip" name="nip" value="<?php echo htmlspecialchars($pegawai->nip); ?>" readonly>
             </div>
+
+            <!-- <div class="mb-3">
+                <label for="nip" class="form-label">NIP</label>
+                <input type="hidden" class="form-control" id="tempat_lahir" name="tempat_lahir" value="<?php echo htmlspecialchars($pegawai->nip); ?>" readonly>
+            </div> -->
             
             <!-- Field lainnya sama seperti create.php, tapi dengan value -->
             <div class="mb-3">

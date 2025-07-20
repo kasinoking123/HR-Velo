@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
+use Illuminate\Container\Attributes\Log;
+use Illuminate\Support\Facades\DB;
 
 
 class PegawaiController extends Controller
@@ -63,28 +65,33 @@ class PegawaiController extends Controller
     // Update data pegawai
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'nama' => 'required|max:100',
-            'jenis_kelamin' => 'required|in:L,P',
-            'tempat_lahir' => 'required|max:50',
-            'tanggal_lahir' => 'required|date',
-            'jabatan' => 'required|max:50',
-            'departemen' => 'required|max:50',
-            'tanggal_masuk' => 'required|date',
-            'email' => 'required|email|unique:pegawai,email,'.$id,
-            'telepon' => 'required|max:15',
-            'alamat' => 'required',
-        ]);
+        try {
+            $validated = $request->validate([
+                'nama' => 'required|max:100',
+                'jenis_kelamin' => 'required|in:L,P',
+                // tambahkan validasi lainnya
+            ]);
 
-        Pegawai::where('id', $id)->update($validated);
+            $pegawai = Pegawai::findOrFail($id);
+            $pegawai->update($validated);
 
-        return redirect('/pegawai');
+            return redirect('/pegawai')->with('success', 'Data berhasil diupdate');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengupdate data: '.$e->getMessage());
+        }
     }
 
     // Hapus pegawai
     public function destroy($id)
     {
-        Pegawai::destroy($id);
-        return redirect('/pegawai');
+        try{
+            Pegawai::destroy($id);
+            return redirect('/pegawai')->with('success','Data Berhasil dihapus');
+        }
+        catch(\Exception $e){
+             return back()->with('error', 'Gagal mengupdate data: '.$e->getMessage());
+        }
+       
     }
 }

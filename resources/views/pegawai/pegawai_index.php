@@ -7,14 +7,16 @@
 </head>
 <body>
     <div class="container mt-4">
+        <?php if(session('success')): ?>
+            <div class="alert alert-success"><?php echo session('success'); ?></div>
+        <?php endif; ?>
+        
+        <?php if(session('error')): ?>
+            <div class="alert alert-danger"><?php echo session('error'); ?></div>
+        <?php endif; ?>
         <h2>Daftar Pegawai</h2>
         <a href="/pegawai/create" class="btn btn-primary mb-3">Tambah Pegawai</a>
         
-        <?php if(session('success')): ?>
-        <div class="alert alert-success">
-            <?php echo session('success'); ?>
-        </div>
-        <?php endif; ?>
         
         <table class="table table-bordered">
             <thead>
