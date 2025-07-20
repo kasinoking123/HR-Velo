@@ -16,8 +16,15 @@ class UserSeeder extends Seeder
         User::create([
         'name' => 'Staff',
         'email' => 'staff@example.com',
+        'tempat_lahir' => 'bandung',
+        'tangal_lahir' => '1993-12-03',
+        'alamat' => 'gg manunggal 2c',
+        'jabatan' => 'Programmer',
+        'tanggal_masuk' => '2015-01-01',
         'password' => bcrypt('password123'),
-        'role' => 'user'
+        'role' => 'user',
+
+
     ]);
     }
 }
