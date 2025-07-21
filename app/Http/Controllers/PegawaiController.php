@@ -16,11 +16,12 @@ class PegawaiController extends Controller
         $sortField = $request->input('sort', 'nama'); // Default sort by nama
         $sortDirection = $request->input('direction', 'asc'); // Default asc
 
-        $pegawais = Pegawai::when($search, function ($query, $search) {
-        return $query->where('nip', 'like', "%{$search}%")
-                   ->orWhere('nama', 'like', "%{$search}%")
-                   ->orWhere('jabatan', 'like', "%{$search}%")
-                   ->orWhere('departemen', 'like', "%{$search}%");
+        $pegawais = Pegawai::when($search, function ($query, $search)  {
+            $searchTerm = strtolower($search);
+            return $query->whereRaw('LOWER(nip) LIKE ?', ["%{$searchTerm}%"])
+               ->orWhereRaw('LOWER(nama) LIKE ?', ["%{$searchTerm}%"])
+               ->orWhereRaw('LOWER(jabatan) LIKE ?', ["%{$searchTerm}%"])
+               ->orWhereRaw('LOWER(departemen) LIKE ?', ["%{$searchTerm}%"]);
         })
         ->orderBy($sortField, $sortDirection)
         ->paginate(5);
