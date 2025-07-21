@@ -10,10 +10,24 @@ use Illuminate\Support\Facades\DB;
 
 class PegawaiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pegawais = Pegawai::all();
-        return response()->view('pegawai.pegawai_index', ['pegawais' => $pegawais]);
+        $search = $request->input('search');
+        $sortField = $request->input('sort', 'nama'); // Default sort by nama
+        $sortDirection = $request->input('direction', 'asc'); // Default asc
+
+        $pegawais = Pegawai::when($search, function ($query, $search) {
+        return $query->where('nip', 'like', "%{$search}%")
+                   ->orWhere('nama', 'like', "%{$search}%")
+                   ->orWhere('jabatan', 'like', "%{$search}%")
+                   ->orWhere('departemen', 'like', "%{$search}%");
+        })
+        ->orderBy($sortField, $sortDirection)
+        ->paginate(5);
+
+        // $pegawais = Pegawai::paginate(5);
+        // $pegawais->paginate(5);
+        return view('pegawai.pegawai_index', compact('pegawais', 'search', 'sortField', 'sortDirection'));
     }
 
     // Menampilkan form tambah pegawai
