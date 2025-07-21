@@ -23,6 +23,9 @@ class Pegawai extends Model
         'status',
         'email',
         'telepon',
+        'kontak_darurat',
+        'npwp',
+        'no_rek',
         'alamat',
         'foto',
         'keterangan'

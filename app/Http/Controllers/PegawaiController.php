@@ -40,17 +40,23 @@ class PegawaiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nip' => 'required|unique:pegawai|max:20',
-            'nama' => 'required|max:100',
-            'jenis_kelamin' => 'required|in:L,P',
-            'tempat_lahir' => 'required|max:50',
-            'tanggal_lahir' => 'required|date',
-            'jabatan' => 'required|max:50',
-            'departemen' => 'required|max:50',
-            'tanggal_masuk' => 'required|date',
-            'email' => 'required|email|unique:pegawai',
-            'telepon' => 'required|max:15',
-            'alamat' => 'required',
+            'nama'              => 'required|string|max:255',
+            'nip'               => 'required|string|max:50|unique:pegawais,nip',
+            'jenis_kelamin'     => 'required|in:L,P',
+            'tempat_lahir'      => 'required|string|max:100',
+            'tanggal_lahir'     => 'required|date|before:today',
+            'jabatan'           => 'required|string|max:100',
+            'departemen'        => 'required|string|max:100',
+            'tanggal_masuk'     => 'required|date|before_or_equal:today',
+            'status'            => 'required|in:aktif,cuti,nonaktif',
+            'email'             => 'nullable|email|max:255',
+            'telepon'           => 'nullable|string|max:20',
+            'kontak_darurat'    => 'nullable|string|max:100',
+            'npwp'              => 'nullable|string|max:30',
+            'no_rek'            => 'nullable|string|max:30',
+            'alamat'            => 'nullable|string|max:500',
+            'keterangan'        => 'nullable|string|max:1000',
+            'foto'              => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         Pegawai::create($validated);
@@ -75,21 +81,32 @@ class PegawaiController extends Controller
     // Update data pegawai
     public function update(Request $request, $id)
     {
-        try {
-            $validated = $request->validate([
-                'nama' => 'required|max:100',
-                'jenis_kelamin' => 'required|in:L,P',
-                // tambahkan validasi lainnya
-            ]);
+           
+                $validated = $request->validate([
+                    'nama'              => 'required|string|max:255',
+                    'jenis_kelamin'     => 'required|in:L,P',
+                    'tempat_lahir'      => 'required|string|max:100',
+                    'tanggal_lahir'     => 'required|date|before:today',
+                    'jabatan'           => 'required|string|max:100',
+                    'departemen'        => 'required|string|max:100',
+                    'tanggal_masuk'     => 'required|date|before_or_equal:today',
+                    'status'            => 'required|in:aktif,cuti,nonaktif',
+                    'email'             => 'nullable|email|max:255',
+                    'telepon'           => 'nullable|string|max:20',
+                    'kontak_darurat'    => 'nullable|string|max:100',
+                    'npwp'              => 'nullable|string|max:30',
+                    'no_rek'            => 'nullable|string|max:30',
+                    'alamat'            => 'nullable|string|max:500',
+                    'keterangan'        => 'nullable|string|max:1000',
+                    // 'foto'              => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                    // tambahkan validasi lainnya
+                ]);
 
-            $pegawai = Pegawai::findOrFail($id);
-            $pegawai->update($validated);
+                $pegawai = Pegawai::findOrFail($id);
+                $pegawai->update($validated);
 
-            return redirect('/pegawai')->with('success', 'Data berhasil diupdate');
+                return redirect('/pegawai')->with('success', 'Data berhasil diupdate');
 
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal mengupdate data: '.$e->getMessage());
-        }
     }
 
     // Hapus pegawai
