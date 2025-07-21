@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Reimbursement;
 
 class User extends Authenticatable
 {
@@ -50,7 +51,17 @@ class User extends Authenticatable
     public function isAdmin() : bool
     {
        
-        return $this->role=='admin';
+        return $this->role=='admin'; 
         
+    }
+
+    public function isManager()
+    {
+        return $this->role === 'manager';
+    }
+
+    public function isFinance()
+    {
+        return $this->role === 'finance';
     }
 }
