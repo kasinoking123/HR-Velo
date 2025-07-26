@@ -79,7 +79,7 @@
                         @forelse($reimbursements as $reimb)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 whitespace-nowrap">{{ ($reimbursements->currentPage() - 1) * $reimbursements->perPage() + $loop->iteration }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">{{ $reimb->date->format('d/m/Y') }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">{{ \Carbon\Carbon::parse($reimb->date)->format('d/m/Y') }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     @switch($reimb->category)
                                         @case('transport') Biaya Transportasi @break
@@ -105,11 +105,6 @@
                                     <a href="{{ route('reimbursements.show', $reimb->id) }}">
                                         <x-secondary-button>Detail</x-secondary-button>
                                     </a>
-                                    @if($reimb->status == 'pending')
-                                        <a href="{{ route('reimbursements.edit', $reimb->id) }}">
-                                            <x-primary-button>Edit</x-primary-button>
-                                        </a>
-                                    @endif
                                 </td>
                             </tr>
                         @empty

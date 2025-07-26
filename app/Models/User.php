@@ -30,6 +30,12 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+        public function reimbursements()
+    {
+        return $this->hasMany(Reimbursement::class);
+    }
+
     protected $hidden = [
         'password',
         'remember_token',

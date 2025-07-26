@@ -87,11 +87,7 @@
                     <a href="{{ route('reimbursements.index') }}">
                         <x-secondary-button>Kembali</x-secondary-button>
                     </a>
-                    @if($reimbursement->status == 'pending' && auth()->user()->id == $reimbursement->user_id)
-                        <a href="{{ route('reimbursements.edit', $reimbursement->id) }}">
-                            <x-primary-button>Edit</x-primary-button>
-                        </a>
-                    @endif
+                    
                 </div>
             </div>
         </div>

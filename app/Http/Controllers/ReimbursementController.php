@@ -3,26 +3,38 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Reimbursement;
+use App\Models\reimbursement;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class ReimbursementController extends Controller
+class reimbursementController extends Controller
 {
+    use AuthorizesRequests;
     // Tampilkan daftar pengajuan untuk pegawai
     public function index()
     {
-        $reimbursements = auth()->user()->reimbursements()->latest()->get();
-        return view('reimbursements.index', compact('reimbursements'));
+        // $reimbursements = auth()->user()->reimbursements()->latest()->get();
+        // return view('reimbursement.index', compact('reimbursements'));
+        $sortField = request('sort', 'date');
+        $sortDirection = request('direction', 'desc');
+    
+        $reimbursements = auth()->user()->reimbursements()
+                            ->orderBy($sortField, $sortDirection)
+                            ->paginate(10)
+                            ->appends(request()->query());
+        
+        return view('reimbursement.index', compact('reimbursements', 'sortField', 'sortDirection'));
     }
 
     // Form pengajuan baru
     public function create()
     {
-        return view('reimbursements.create');
+        return view('reimbursement.create');
     }
 
     // Simpan pengajuan baru
     public function store(Request $request)
     {
+        // dd('here');
         $request->validate([
             'category' => 'required|in:transport,atk,health,entertain,other',
             'date' => 'required|date',
@@ -33,7 +45,7 @@ class ReimbursementController extends Controller
 
         $filePath = $request->file('proof_file')->store('reimbursements');
 
-        Reimbursement::create([
+        reimbursement::create([
             'user_id' => auth()->id(),
             'category' => $request->category,
             'date' => $request->date,
@@ -47,21 +59,21 @@ class ReimbursementController extends Controller
     }
 
     // Tampilkan detail pengajuan
-    public function show(Reimbursement $reimbursement)
+    public function show(reimbursement $reimbursement)
     {
         $this->authorize('view', $reimbursement);
-        return view('reimbursements.show', compact('reimbursement'));
+        return view('reimbursement.show', compact('reimbursement'));
     }
 
     // Daftar pengajuan yang perlu disetujui (Manager)
     public function approvalIndex()
     {
-        $reimbursements = Reimbursement::where('status', 'pending')->get();
-        return view('reimbursements.approval', compact('reimbursements'));
+        $reimbursements = reimbursement::where('status', 'pending')->get();
+        return view('reimbursement.approval', compact('reimbursements'));
     }
 
     // Approve pengajuan (Manager)
-    public function approve(Reimbursement $reimbursement)
+    public function approve(reimbursement $reimbursement)
     {
         $reimbursement->update([
             'status' => 'approved',
@@ -71,7 +83,7 @@ class ReimbursementController extends Controller
     }
 
     // Reject pengajuan (Manager)
-    public function reject(Request $request, Reimbursement $reimbursement)
+    public function reject(Request $request, reimbursement $reimbursement)
     {
         $request->validate(['rejection_reason' => 'required|string|max:255']);
         
@@ -86,12 +98,12 @@ class ReimbursementController extends Controller
     // Daftar pengajuan yang perlu dibayar (Finance)
     public function paymentIndex()
     {
-        $reimbursements = Reimbursement::where('status', 'approved')->get();
-        return view('reimbursements.payment', compact('reimbursements'));
+        $reimbursements = reimbursement::where('status', 'approved')->get();
+        return view('reimbursement.payment', compact('reimbursements'));
     }
 
     // Tandai sebagai dibayar (Finance)
-    public function markAsPaid(Reimbursement $reimbursement)
+    public function markAsPaid(reimbursement $reimbursement)
     {
         $reimbursement->update([
             'status' => 'paid',

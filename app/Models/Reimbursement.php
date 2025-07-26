@@ -29,4 +29,8 @@ class Reimbursement extends Model
     {
         return $this->belongsTo(User::class, 'finance_id');
     }
+    protected $casts = [
+        'date' => 'date', // atau 'datetime' jika menyimpan waktu juga
+    ];
+
 }
