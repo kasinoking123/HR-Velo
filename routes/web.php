@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reimbursements/create', [ReimbursementController::class, 'create'])->name('reimbursements.create');
     Route::post('/reimbursements', [ReimbursementController::class, 'store'])->name('reimbursements.store');
     Route::get('/reimbursements/{reimbursement}', [ReimbursementController::class, 'show'])->name('reimbursements.show');
+   
 });
 
 // Untuk Manager (Approve/Reject)

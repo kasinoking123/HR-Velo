@@ -34,8 +34,8 @@ class reimbursementController extends Controller
     // Simpan pengajuan baru
     public function store(Request $request)
     {
-        // dd('here');
-        $request->validate([
+        // dd($request);
+        $validate = $request->validate([
             'category' => 'required|in:transport,atk,health,entertain,other',
             'date' => 'required|date',
             'amount' => 'required|numeric|min:1000',
@@ -43,25 +43,31 @@ class reimbursementController extends Controller
             'proof_file' => 'required|file|mimes:jpg,png,pdf|max:5120',
         ]);
 
-        $filePath = $request->file('proof_file')->store('reimbursements');
-
+        // $filePath = $request->file('proof_file')->store();
+        $filePath = $request->file('proof_file')->store('reimbursements', 'public');
+        // reimbursement::create($validate);
+        
         reimbursement::create([
             'user_id' => auth()->id(),
-            'category' => $request->category,
-            'date' => $request->date,
-            'amount' => $request->amount,
-            'description' => $request->description,
+            'category' => $validate['category'],
+            'date' => $validate['date'],
+            'amount' => $validate['amount'],
+            'description' => $validate['description'],
             'proof_file' => $filePath,
             'status' => 'pending',
         ]);
 
+        // dd($filePath);
         return redirect()->route('reimbursements.index')->with('success', 'Pengajuan berhasil dikirim!');
     }
 
     // Tampilkan detail pengajuan
     public function show(reimbursement $reimbursement)
     {
-        $this->authorize('view', $reimbursement);
+        // dd($reimbursement);
+        $auto= $this->authorize('view', $reimbursement);
+        //  dd($auto);
+        
         return view('reimbursement.show', compact('reimbursement'));
     }
 

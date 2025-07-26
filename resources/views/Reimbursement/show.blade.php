@@ -66,9 +66,9 @@
                             <h3 class="text-lg font-medium text-gray-900">Bukti Pembayaran</h3>
                             <div class="mt-2">
                                 @if(pathinfo($reimbursement->proof_file, PATHINFO_EXTENSION) === 'pdf')
-                                    <embed src="{{ asset('storage/' . $reimbursement->proof_file) }}" type="application/pdf" width="100%" height="300px">
+                                    <embed src="{{ asset('storage/' . $reimbursement->proof_file) }}" type="application/pdf" width="30%" height="300px">
                                 @else
-                                    <img src="{{ asset('storage/' . $reimbursement->proof_file) }}" alt="Bukti Pembayaran" class="max-w-full h-auto rounded-lg">
+                                    <img src="{{ asset('storage/' . $reimbursement->proof_file) }}" alt="Bukti Pembayaran" class="max-w-full h-auto rounded-lg" width="30%" height="300px>
                                 @endif
                             </div>
                         </div>
