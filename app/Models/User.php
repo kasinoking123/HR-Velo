@@ -22,7 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role,'
+        'role'
     ];
 
     /**
@@ -31,7 +31,7 @@ class User extends Authenticatable
      * @var list<string>
      */
 
-        public function reimbursements()
+    public function reimbursements()
     {
         return $this->hasMany(Reimbursement::class);
     }
@@ -61,13 +61,13 @@ class User extends Authenticatable
         
     }
 
-    public function isManager()
+    public function hasAnyRole(array $roles): bool
     {
-        return $this->role === 'manager';
+        return in_array($this->role, $roles);
     }
 
-    public function isFinance()
+    public function hasRole(string $role): bool
     {
-        return $this->role === 'finance';
+        return $this->role === $role;
     }
 }

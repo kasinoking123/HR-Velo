@@ -24,11 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route::middleware(['auth','admin'])->group(function () {
-    // Route::resource('pegawai', PegawaiController::class);
-    // Menggantikan:
-// Route::resource('pegawai', PegawaiController::class);
-
 // Menjadi:
 Route::get('/pegawai', [PegawaiController::class, 'index'])->name('pegawai.index')->middleware('admin');       // Menampilkan daftar pegawai
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create')->middleware('admin'); // Form tambah pegawai
@@ -54,12 +49,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reimbursements/create', [ReimbursementController::class, 'create'])->name('reimbursements.create');
     Route::post('/reimbursements', [ReimbursementController::class, 'store'])->name('reimbursements.store');
     Route::get('/reimbursements/{reimbursement}', [ReimbursementController::class, 'show'])->name('reimbursements.show');
-   
 });
+
 
 // Untuk Manager (Approve/Reject)
 Route::middleware(['auth', 'role:manager'])->group(function () {
-    Route::get('/reimbursements/approval', [ReimbursementController::class, 'approvalIndex'])->name('reimbursements.approval');
+    Route::get('/manager/approval', [ReimbursementController::class, 'approvalIndex'])->name('reimbursements.approval');
     Route::post('/reimbursements/{reimbursement}/approve', [ReimbursementController::class, 'approve'])->name('reimbursements.approve');
     Route::post('/reimbursements/{reimbursement}/reject', [ReimbursementController::class, 'reject'])->name('reimbursements.reject');
 });

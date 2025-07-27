@@ -3,32 +3,38 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\reimbursement;
+use App\Models\Reimbursement;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class reimbursementController extends Controller
+class ReimbursementController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware('role:manager')->only('approveReimbursement');
+    //     $this->middleware('role:finance')->only('processPayment');
+    // }
+
     use AuthorizesRequests;
     // Tampilkan daftar pengajuan untuk pegawai
     public function index()
     {
-        // $reimbursements = auth()->user()->reimbursements()->latest()->get();
-        // return view('reimbursement.index', compact('reimbursements'));
+        // $Reimbursements = auth()->user()->Reimbursements()->latest()->get();
+        // return view('Reimbursement.index', compact('Reimbursements'));
         $sortField = request('sort', 'date');
         $sortDirection = request('direction', 'desc');
     
-        $reimbursements = auth()->user()->reimbursements()
+        $Reimbursements = auth()->user()->Reimbursements()
                             ->orderBy($sortField, $sortDirection)
                             ->paginate(10)
                             ->appends(request()->query());
         
-        return view('reimbursement.index', compact('reimbursements', 'sortField', 'sortDirection'));
+        return view('Reimbursement.index', compact('Reimbursements', 'sortField', 'sortDirection'));
     }
 
     // Form pengajuan baru
     public function create()
     {
-        return view('reimbursement.create');
+        return view('Reimbursement.create');
     }
 
     // Simpan pengajuan baru
@@ -44,10 +50,10 @@ class reimbursementController extends Controller
         ]);
 
         // $filePath = $request->file('proof_file')->store();
-        $filePath = $request->file('proof_file')->store('reimbursements', 'public');
-        // reimbursement::create($validate);
+        $filePath = $request->file('proof_file')->store('Reimbursements', 'public');
+        // Reimbursement::create($validate);
         
-        reimbursement::create([
+        Reimbursement::create([
             'user_id' => auth()->id(),
             'category' => $validate['category'],
             'date' => $validate['date'],
@@ -58,30 +64,34 @@ class reimbursementController extends Controller
         ]);
 
         // dd($filePath);
-        return redirect()->route('reimbursements.index')->with('success', 'Pengajuan berhasil dikirim!');
+        return redirect()->route('Reimbursements.index')->with('success', 'Pengajuan berhasil dikirim!');
     }
 
     // Tampilkan detail pengajuan
-    public function show(reimbursement $reimbursement)
+    public function show(Reimbursement $Reimbursement)
     {
-        // dd($reimbursement);
-        $auto= $this->authorize('view', $reimbursement);
+        // dd($Reimbursement);
+        $auto= $this->authorize('view', $Reimbursement);
         //  dd($auto);
         
-        return view('reimbursement.show', compact('reimbursement'));
+        return view('Reimbursement.show', compact('Reimbursement'));
     }
 
     // Daftar pengajuan yang perlu disetujui (Manager)
     public function approvalIndex()
     {
-        $reimbursements = reimbursement::where('status', 'pending')->get();
+        $reimbursements = Reimbursement::with('user')
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('reimbursement.approval', compact('reimbursements'));
+
     }
 
     // Approve pengajuan (Manager)
-    public function approve(reimbursement $reimbursement)
+    public function approve(Reimbursement $Reimbursement)
     {
-        $reimbursement->update([
+        $Reimbursement->update([
             'status' => 'approved',
             'approver_id' => auth()->id(),
         ]);
@@ -89,11 +99,11 @@ class reimbursementController extends Controller
     }
 
     // Reject pengajuan (Manager)
-    public function reject(Request $request, reimbursement $reimbursement)
+    public function reject(Request $request, Reimbursement $Reimbursement)
     {
         $request->validate(['rejection_reason' => 'required|string|max:255']);
         
-        $reimbursement->update([
+        $Reimbursement->update([
             'status' => 'rejected',
             'approver_id' => auth()->id(),
             'rejection_reason' => $request->rejection_reason,
@@ -104,14 +114,14 @@ class reimbursementController extends Controller
     // Daftar pengajuan yang perlu dibayar (Finance)
     public function paymentIndex()
     {
-        $reimbursements = reimbursement::where('status', 'approved')->get();
-        return view('reimbursement.payment', compact('reimbursements'));
+        $Reimbursements = Reimbursement::where('status', 'approved')->get();
+        return view('Reimbursement.payment', compact('Reimbursements'));
     }
 
     // Tandai sebagai dibayar (Finance)
-    public function markAsPaid(reimbursement $reimbursement)
+    public function markAsPaid(Reimbursement $Reimbursement)
     {
-        $reimbursement->update([
+        $Reimbursement->update([
             'status' => 'paid',
             'finance_id' => auth()->id(),
         ]);

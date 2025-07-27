@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\checkRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -25,5 +26,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // Atau daftarkan sebagai route middleware
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
         ]);
     })->create();
