@@ -127,4 +127,17 @@ class ReimbursementController extends Controller
         ]);
         return back()->with('success', 'Status pembayaran diperbarui!');
     }
+
+
+    // app/Http/Controllers/ReimbursementController.php
+    public function trackStatus(Request $request)
+    {
+        $status = $request->input('status');
+        $reimbursements = auth()->user()->reimbursements()
+            ->filterByStatus($status)
+            ->latest()
+            ->paginate(10);
+
+        return view('reimbursement.track', compact('reimbursements'));
+    }
 }

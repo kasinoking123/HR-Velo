@@ -45,6 +45,8 @@ Route::get('/test-db', function() {
 
 // Untuk Pegawai
 Route::middleware(['auth'])->group(function () {
+    Route::get('/reimbursements/track', [ReimbursementController::class, 'trackStatus'])
+        ->name('reimbursements.track');
     Route::get('/reimbursements', [ReimbursementController::class, 'index'])->name('reimbursements.index');
     Route::get('/reimbursements/create', [ReimbursementController::class, 'create'])->name('reimbursements.create');
     Route::post('/reimbursements', [ReimbursementController::class, 'store'])->name('reimbursements.store');
@@ -59,11 +61,13 @@ Route::middleware(['auth', 'role:manager'])->group(function () {
     Route::post('/reimbursements/{reimbursement}/reject', [ReimbursementController::class, 'reject'])->name('reimbursements.reject');
 });
 
+
 // Untuk Finance (Proses Pembayaran)
 Route::middleware(['auth', 'role:finance'])->group(function () {
     Route::get('/reimbursements/payment', [ReimbursementController::class, 'paymentIndex'])->name('reimbursements.payment');
     Route::post('/reimbursements/{reimbursement}/pay', [ReimbursementController::class, 'markAsPaid'])->name('reimbursements.pay');
 });
+
 
 
 require __DIR__.'/auth.php';

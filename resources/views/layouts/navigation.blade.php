@@ -21,6 +21,9 @@
                             {{ __('Pegawai') }}
                         </x-nav-link>
                     @endif
+                    <x-nav-link href="{{ route('reimbursements.track') }}" :active="request()->routeIs('reimbursements.track')">
+                        {{ __('Lacak Status') }}
+                    </x-nav-link>
                 </div>
             </div>
 
